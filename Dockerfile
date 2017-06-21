@@ -22,22 +22,26 @@ RUN mkdir ~/temp &&\
     rm -rf ~/temp
 
 
+ARG CACHEBUST=1
+
 RUN git clone https://github.com/lede-project/source.git lede
 
 RUN adduser omega &&  echo 'omega:omega' | chpasswd   && chown -R omega:omega lede
 WORKDIR lede
 USER omega
 
-RUN ./scripts/feeds update -a  && ./scripts/feeds install -a 
+RUN ./scripts/feeds update -a  && ./scripts/feeds install -a
 
 
 # Set SDK environment for Omega2
 # For Omega2+ change the third echo line with: (notice the 'p' for plus)
 #  echo "CONFIG_TARGET_ramips_mt7688_DEVICE_omega2p=y" > .config && \
 
+ARG TARGET_DEVICE=omega2p
+
 RUN echo "CONFIG_TARGET_ramips=y" > .config  && \
     echo "CONFIG_TARGET_ramips_mt7688=y" >> .config  && \
-    echo "CONFIG_TARGET_ramips_mt7688_DEVICE_omega2=y" >> .config && \
+    echo "CONFIG_TARGET_ramips_mt7688_DEVICE_${TARGET_DEVICE}=y" >> .config && \
     make defconfig
 
 
