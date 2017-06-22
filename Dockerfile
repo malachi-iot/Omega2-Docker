@@ -21,9 +21,15 @@ RUN mkdir ~/temp &&\
     make install &&\
     rm -rf ~/temp
 
+RUN mkdir /opt/cmake
+
+COPY image/Toolchain-omega2-mipsel.cmake /opt/cmake
+COPY image/cmake_cross.sh /usr/local/bin
 
 ARG CACHEBUST=1
 
+# Todo: pull specific version of LEDE so we don't break toolchain pathing
+# OR do CONFIG_TARGETS in such a way to achieve that
 RUN git clone https://github.com/lede-project/source.git lede
 
 RUN adduser omega &&  echo 'omega:omega' | chpasswd   && chown -R omega:omega lede
